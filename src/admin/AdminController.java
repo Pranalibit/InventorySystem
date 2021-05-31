@@ -214,6 +214,12 @@ public class AdminController implements Initializable {
         }
         catch (SQLException e)
         {
+            Alert alert = new Alert ( Alert.AlertType.INFORMATION );
+            alert.setTitle ( "Information" );
+            ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            alert.setContentText("ID Should be unique");
+            alert.show ();
             System.err.println("Got an exception!");
             System.err.println(e.getMessage());
         }
@@ -297,6 +303,18 @@ public class AdminController implements Initializable {
         String sqlInsert = "INSERT INTO customer(id, fname, lname, product, quantity, payment, phoneNumber, address, buyingDate) VALUES (? , ?, ?, ?, ?, ?, ?, ?, ?)";
         try
         {
+            //Alert if any field is empty
+            if (customerid.getText ().isEmpty () | customerfirstname.getText ().isEmpty () | customerlastname.getText ().isEmpty ()
+                    | customerproduct.getText ().isEmpty () | customerquantity.getText ().isEmpty () | customerpayment.getText ().isEmpty ()
+                    | customerphonenumber.getText ().isEmpty () | customeraddress.getText ().isEmpty () | customerbuydate.getEditor ().getText ().isEmpty ()){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //Setting the title
+                alert.setTitle("Error");
+                ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+                //Setting the content of the dialog
+                alert.setContentText("Field can't be empty");
+                alert.show ();
+            }
             //object of Connection class which stores SQL Connection
             Connection conn = dbConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlInsert);
@@ -316,6 +334,12 @@ public class AdminController implements Initializable {
         }
         catch (SQLException e)
         {
+            Alert alert = new Alert ( Alert.AlertType.INFORMATION );
+            alert.setTitle ( "Information" );
+            ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            alert.setContentText("ID Should be unique");
+            alert.show ();
             System.err.println("Got an exception!");
             System.err.println(e.getMessage());
         }
@@ -327,6 +351,19 @@ public class AdminController implements Initializable {
         String sqlInsert = "INSERT INTO product(id, name, quantity, price, discount) VALUES (? , ?, ?, ?, ?)";
         try
         {
+            //Alert if any field is empty
+            if (productid.getText ().isEmpty () | productname.getText ().isEmpty () | productquantity.getText ().isEmpty ()
+                    | productquantity.getText ().isEmpty () | productprice.getText ().isEmpty () | productdiscount.getText ().isEmpty ()
+                    ){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //Setting the title
+                alert.setTitle("Error");
+                ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+                //Setting the content of the dialog
+                alert.setContentText("Field can't be empty");
+                alert.show ();
+            }
+
             Connection conn = dbConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlInsert);
             stmt.setString(1, this.productid.getText());
@@ -341,6 +378,12 @@ public class AdminController implements Initializable {
         }
         catch (SQLException e)
         {
+            Alert alert = new Alert ( Alert.AlertType.INFORMATION );
+            alert.setTitle ( "Information" );
+            ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            alert.setContentText("ID Should be unique");
+            alert.show ();
             System.err.println("Got an exception!");
             System.err.println(e.getMessage());
         }

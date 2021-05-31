@@ -1,3 +1,4 @@
+//Import Package
 package authenticate;
 
 import Employee.EmployeeController;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 public class LoginController implements Initializable {
 
 
@@ -25,13 +27,9 @@ public class LoginController implements Initializable {
     //Tag fields in FXML
 
     @FXML
-    private Label userLabel;
-    @FXML
-    private Label passLabel;
-    @FXML
     private TextField username;
     @FXML
-    private TextField password;
+    private PasswordField password;
     @FXML
     private Button loginButton;
     @FXML
@@ -39,8 +37,11 @@ public class LoginController implements Initializable {
     @FXML
     private Label loginStatus;
 
+    //Initializable and the method it adds are used when you want
+    // to interact with stuff injected with @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Check whether connected to DB
         if (this.loginModel.isDBConnected()){
             System.out.println("Connected to DB");
         }
@@ -48,14 +49,16 @@ public class LoginController implements Initializable {
             System.out.println("Not Connected to DB");
         }
 
+        //Set Items in Combo Box using enum class
         this.RolecomboBox.setItems(FXCollections.observableArrayList(option.values()));
     }
 
 
-
+    //Event for login Button
     @FXML
     public void Login(ActionEvent actionEvent){
         try {
+            //Check for loginCredentials
             if (this.loginModel.isLogin(this.username.getText(),
                     this.password.getText(),
                     ((option)this.RolecomboBox.getValue()).toString())
@@ -66,6 +69,7 @@ public class LoginController implements Initializable {
                 //login is loginButton id
                 Stage stage = (Stage)this.loginButton.getScene().getWindow();
                 stage.close();
+                //Navigates to Admin or Employee depending upon role value in ComboBox
                 switch (((option)this.RolecomboBox.getValue()).toString()){
                     case "Admin":
                         adminLogin();
@@ -78,6 +82,7 @@ public class LoginController implements Initializable {
 
             }
             else {
+                //If login credentials doesn't match
                 this.loginStatus.setText("Wrong Credentials");
                 System.out.println(this.username.getText());
                 System.out.println(this.password.getText());

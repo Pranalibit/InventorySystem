@@ -3,7 +3,9 @@ package admin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+//Concept of encapsulation
 public class CustomerData {
+    //Declare values as stringProperty
     private final StringProperty CustomerID;
     private final StringProperty CustomerFirstName;
     private final StringProperty CustomerLastName;
@@ -16,8 +18,9 @@ public class CustomerData {
 
 
 
-
+    //Constructor
     public CustomerData(String customerid, String customerfirstname, String customerlastname, String customerproduct, String customerquantity, String customerpayment, String customerphonenumber, String customeraddress, String customerbuydate) {
+        //Set initial value
         this.CustomerID = new SimpleStringProperty(customerid);
         this.CustomerFirstName = new SimpleStringProperty(customerfirstname);
         this.CustomerLastName = new SimpleStringProperty(customerlastname);
@@ -31,6 +34,7 @@ public class CustomerData {
 
     }
 
+    //getter and setter to access values from CustomerData class
     public String getCustomerID() {
         return CustomerID.get();
     }

@@ -1,0 +1,7 @@
+.bodybg{
+    -fx-background-image: url("background.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-size: 1098 703;
+    -fx-background-position: center center;
+
+}

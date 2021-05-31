@@ -1,5 +1,7 @@
+//Import Package
 package authenticate;
 
+// Enum class which represents a group of constants
 public enum option {
     Admin, Employee;
 

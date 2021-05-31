@@ -6,10 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
@@ -57,6 +54,7 @@ public class AdminController implements Initializable {
     private TableColumn<EmployeeData, String> phoneNumberColumn;
     @FXML
     private TableColumn<EmployeeData, String> salaryColumn;
+
     //Customer Pane
     @FXML
     private TextField customerid;
@@ -125,16 +123,19 @@ public class AdminController implements Initializable {
 
 
 
-    private dbConnection dc;
-    private ObservableList<EmployeeData> data;
+    private dbConnection dc;//Object of dbConnection class
+    private ObservableList<EmployeeData> data;//Object of employee data class
     private ObservableList<CustomerData> dataCustomer;
     private ObservableList<ProductData> dataProduct;
 
     public void initialize(URL url, ResourceBundle rb)
     {
+        //Establish connection
         this.dc = new dbConnection();
     }
 
+
+    //Action event for load employee button
     @FXML
     private void loadEmployeeData(ActionEvent event)
     {
@@ -144,9 +145,12 @@ public class AdminController implements Initializable {
         {
             System.out.println("under try");
             Connection conn = dbConnection.getConnection();
+            //Creates a new empty observable list backed by an arraylist.
             this.data = FXCollections.observableArrayList();
 
+            //Execute SQL Query and store information in result set
             ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM employee");
+            //Iterates until last row in database
             while (rs.next()) {
                 this.data.add(new EmployeeData(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6), rs.getString(7),rs.getString(8)));
             }
@@ -157,6 +161,7 @@ public class AdminController implements Initializable {
         }
 
         //From EmployeeData Class
+        //Create table view
         this.idColumn.setCellValueFactory(new PropertyValueFactory<EmployeeData, String>("ID"));
         this.firstNameColumn.setCellValueFactory(new PropertyValueFactory<EmployeeData, String>("FirstName"));
         this.lastNameColumn.setCellValueFactory(new PropertyValueFactory<EmployeeData, String>("LastName"));
@@ -166,18 +171,35 @@ public class AdminController implements Initializable {
         this.phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<EmployeeData, String>("PhoneNumber"));
         this.salaryColumn.setCellValueFactory(new PropertyValueFactory<EmployeeData, String>("Salary"));
 
-        this.employeeData.setItems(null);
+//        this.employeeData.setItems(null);
         this.employeeData.setItems(this.data);
     }
 
+    //Action event for add employee button
     @FXML
     private void addEmployee(ActionEvent event)
     {
         String sqlInsert = "INSERT INTO employee(id, fname, lname, dob, address, emailID, phoneNumber, salary) VALUES (? , ?, ?, ?, ?, ?, ?, ?)";
         try
         {
+            //Alert if any field is empty
+            if (id.getText ().isEmpty () | firstname.getText ().isEmpty () | lastname.getText ().isEmpty ()
+                    | dob.getEditor ().getText ().isEmpty () | address.getText ().isEmpty () | email.getText ().isEmpty ()
+                    | phonenumber.getText ().isEmpty () | salary.getText ().isEmpty () ){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //Setting the title
+                alert.setTitle("Error");
+                ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+                //Setting the content of the dialog
+                alert.setContentText("Field can't be empty");
+                alert.show ();
+            }
+
+            //object of Connection class which stores SQL Connection
             Connection conn = dbConnection.getConnection();
+            //SubInterface of Statement used to execute parameterized SQL query
             PreparedStatement stmt = conn.prepareStatement(sqlInsert);
+            //1st parameter is index and 2nd parameter is value to set
             stmt.setString(1, this.id.getText());
             stmt.setString(2, this.firstname.getText());
             stmt.setString(3, this.lastname.getText());
@@ -187,29 +209,37 @@ public class AdminController implements Initializable {
             stmt.setString(7,this.phonenumber.getText());
             stmt.setString(8,this.salary.getText());
 
-            stmt.execute();
-            conn.close();
+            stmt.execute();//Execute Query
+            conn.close();//Close connection
         }
         catch (SQLException e)
         {
+            Alert alert = new Alert ( Alert.AlertType.INFORMATION );
+            alert.setTitle ( "Information" );
+            ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            alert.setContentText("ID Should be unique");
+            alert.show ();
             System.err.println("Got an exception!");
             System.err.println(e.getMessage());
         }
     }
 
+    //Action event for clear field set button
     @FXML
     private void clearFields(ActionEvent event)
     {
-        this.id.setText("");
-        this.firstname.setText("");
-        this.lastname.setText("");
-        this.email.setText("");
-        this.dob.setValue(null);
-        this.salary.setText("");
-        this.address.setText("");
-        this.phonenumber.setText("");
+        this.id.setText("");//Set field by empty string
+        this.firstname.setText("");//Set field by empty string
+        this.lastname.setText("");//Set field by empty string
+        this.email.setText("");//Set field by empty string
+        this.dob.setValue(null);//Set field by null value
+        this.salary.setText("");//Set field by empty string
+        this.address.setText("");//Set field by empty string
+        this.phonenumber.setText("");//Set field by empty string
     }
 
+    //Action event for load customer button
     @FXML
     private void loadCustomerData(ActionEvent actionEvent){
 
@@ -218,11 +248,13 @@ public class AdminController implements Initializable {
         try
         {
             System.out.println("under try");
+            //Object of connection class
             Connection conn = dbConnection.getConnection();
-
+            //Creates a new empty observable list backed by an arraylist.
             this.dataCustomer = FXCollections.observableArrayList();
-
+            //Execute SQL Query and store information in result set
             ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM customer");
+            //Iterates until last row in database
             while (rs.next()) {
                 this.dataCustomer.add(new CustomerData(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9)));
             }
@@ -233,6 +265,7 @@ public class AdminController implements Initializable {
         }
 
         //From CustomerData Class
+        //Create table view
         this.customeridColumn.setCellValueFactory(new PropertyValueFactory<CustomerData,String>("CustomerID"));
         this.customerfirstNameColumn.setCellValueFactory(new PropertyValueFactory<CustomerData,String>("CustomerFirstName"));
         this.customerlastNameColumn.setCellValueFactory(new PropertyValueFactory<CustomerData,String>("CustomerLastName"));
@@ -248,28 +281,44 @@ public class AdminController implements Initializable {
         this.customerData.setItems(this.dataCustomer);
     }
 
+    //Action event for clear field set button
     @FXML
     private void clearCustomerFields(ActionEvent actionEvent){
 
-        this.customerid.setText("");
-        this.customerfirstname.setText("");
-        this.customerlastname.setText("");
-        this.customerproduct.setText("");
-        this.customerquantity.setText("");
-        this.customerpayment.setText("");
-        this.customerphonenumber.setText("");
-        this.customeraddress.setText("");
-        this.customerbuydate.setValue(null);
+        this.customerid.setText("");//Set field by empty string
+        this.customerfirstname.setText("");//Set field by empty string
+        this.customerlastname.setText("");//Set field by empty string
+        this.customerproduct.setText("");//Set field by empty string
+        this.customerquantity.setText("");//Set field by empty string
+        this.customerpayment.setText("");//Set field by empty string
+        this.customerphonenumber.setText("");//Set field by empty string
+        this.customeraddress.setText("");//Set field by empty string
+        this.customerbuydate.setValue(null);//Set field by null value
 
     }
 
+    //Action Event for add customer button
     @FXML
     private void addCustomer(ActionEvent actionEvent){
         String sqlInsert = "INSERT INTO customer(id, fname, lname, product, quantity, payment, phoneNumber, address, buyingDate) VALUES (? , ?, ?, ?, ?, ?, ?, ?, ?)";
         try
         {
+            //Alert if any field is empty
+            if (customerid.getText ().isEmpty () | customerfirstname.getText ().isEmpty () | customerlastname.getText ().isEmpty ()
+                    | customerproduct.getText ().isEmpty () | customerquantity.getText ().isEmpty () | customerpayment.getText ().isEmpty ()
+                    | customerphonenumber.getText ().isEmpty () | customeraddress.getText ().isEmpty () | customerbuydate.getEditor ().getText ().isEmpty ()){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //Setting the title
+                alert.setTitle("Error");
+                ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+                //Setting the content of the dialog
+                alert.setContentText("Field can't be empty");
+                alert.show ();
+            }
+            //object of Connection class which stores SQL Connection
             Connection conn = dbConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlInsert);
+            //1st parameter is index and 2nd parameter is value to set
             stmt.setString(1, this.customerid.getText());
             stmt.setString(2, this.customerfirstname.getText());
             stmt.setString(3, this.customerlastname.getText());
@@ -281,10 +330,16 @@ public class AdminController implements Initializable {
             stmt.setString(9,this.customerbuydate.getEditor().getText());
 
             stmt.execute();
-            conn.close();
+            conn.close();//Close connection
         }
         catch (SQLException e)
         {
+            Alert alert = new Alert ( Alert.AlertType.INFORMATION );
+            alert.setTitle ( "Information" );
+            ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            alert.setContentText("ID Should be unique");
+            alert.show ();
             System.err.println("Got an exception!");
             System.err.println(e.getMessage());
         }
@@ -296,6 +351,19 @@ public class AdminController implements Initializable {
         String sqlInsert = "INSERT INTO product(id, name, quantity, price, discount) VALUES (? , ?, ?, ?, ?)";
         try
         {
+            //Alert if any field is empty
+            if (productid.getText ().isEmpty () | productname.getText ().isEmpty () | productquantity.getText ().isEmpty ()
+                    | productquantity.getText ().isEmpty () | productprice.getText ().isEmpty () | productdiscount.getText ().isEmpty ()
+                    ){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //Setting the title
+                alert.setTitle("Error");
+                ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+                //Setting the content of the dialog
+                alert.setContentText("Field can't be empty");
+                alert.show ();
+            }
+
             Connection conn = dbConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sqlInsert);
             stmt.setString(1, this.productid.getText());
@@ -305,16 +373,23 @@ public class AdminController implements Initializable {
             stmt.setString(5,this.productdiscount.getText());
 
 
-            stmt.execute();
-            conn.close();
+            stmt.execute();//execute query
+            conn.close();//close connection
         }
         catch (SQLException e)
         {
+            Alert alert = new Alert ( Alert.AlertType.INFORMATION );
+            alert.setTitle ( "Information" );
+            ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            //Setting the content of the dialog
+            alert.setContentText("ID Should be unique");
+            alert.show ();
             System.err.println("Got an exception!");
             System.err.println(e.getMessage());
         }
     }
 
+    //Action event for load product button
     @FXML
     private void loadProduct(ActionEvent actionEvent){
 
@@ -323,11 +398,13 @@ public class AdminController implements Initializable {
         try
         {
             System.out.println("under try");
+            //object of Connection class which stores SQL Connection
             Connection conn = dbConnection.getConnection();
-
+            //Creates a new empty observable list backed by an arraylist.
             this.dataProduct = FXCollections.observableArrayList();
-
+            //Execute SQL Query and store information in result set
             ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM product");
+            //Iterates until last row in database
             while (rs.next()) {
                 this.dataProduct.add(new ProductData(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
             }
@@ -338,6 +415,7 @@ public class AdminController implements Initializable {
         }
 
         //From ProductData Class
+        //Create tableview
         this.productidColumn.setCellValueFactory(new PropertyValueFactory<ProductData, String>("ProductID"));
         this.productNameColumn.setCellValueFactory(new PropertyValueFactory<ProductData, String>("ProductName"));
         this.productQuantityColumn.setCellValueFactory(new PropertyValueFactory<ProductData, String>("ProductQuantity"));
@@ -350,13 +428,14 @@ public class AdminController implements Initializable {
 
     }
 
+    //Action event for clear product button
     @FXML
     private void clearProduct(ActionEvent actionEvent){
-        this.productid.setText("");
-        this.productname.setText("");
-        this.productquantity.setText("");
-        this.productprice.setText("");
-        this.productdiscount.setText("");
+        this.productid.setText("");//Set field by empty string
+        this.productname.setText("");//Set field by empty string
+        this.productquantity.setText("");//Set field by empty string
+        this.productprice.setText("");//Set field by empty string
+        this.productdiscount.setText("");//Set field by empty string
     }
 
 }

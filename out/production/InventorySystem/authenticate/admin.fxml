@@ -24,7 +24,7 @@
                      <children>
                         <HBox layoutX="295.0" prefHeight="703.0" prefWidth="1085.0">
                            <children>
-                              <TableView fx:id="employeeData" prefHeight="703.0" prefWidth="1098.0">
+                              <TableView id="TableView" fx:id="employeeData" prefHeight="703.0" prefWidth="1098.0" styleClass="bodybg" stylesheets="@style.css">
                                 <columns>
                                   <TableColumn fx:id="idColumn" prefWidth="100.0" text="ID" />
                                   <TableColumn fx:id="firstNameColumn" prefWidth="150.0" text="First Name" />

@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ProductData {
+
+    //Concept of encapsulation
     private final StringProperty ProductID;
     private final StringProperty ProductName;
     private final StringProperty ProductQuantity;
@@ -18,7 +20,7 @@ public class ProductData {
         this.ProductDiscount = new SimpleStringProperty(productdiscount);
 
     }
-
+    //getters and setter to access values of ProductData class from outside class
     public String getProductID() {
         return ProductID.get();
     }

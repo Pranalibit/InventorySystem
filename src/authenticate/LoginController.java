@@ -1,3 +1,4 @@
+//Import Package
 package authenticate;
 
 import Employee.EmployeeController;
@@ -9,12 +10,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
 
 public class LoginController implements Initializable {
 
@@ -25,13 +31,9 @@ public class LoginController implements Initializable {
     //Tag fields in FXML
 
     @FXML
-    private Label userLabel;
-    @FXML
-    private Label passLabel;
-    @FXML
     private TextField username;
     @FXML
-    private TextField password;
+    private PasswordField password;
     @FXML
     private Button loginButton;
     @FXML
@@ -39,8 +41,11 @@ public class LoginController implements Initializable {
     @FXML
     private Label loginStatus;
 
+    //Initializable and the method it adds are used when you want
+    // to interact with stuff injected with @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Check whether connected to DB
         if (this.loginModel.isDBConnected()){
             System.out.println("Connected to DB");
         }
@@ -48,14 +53,16 @@ public class LoginController implements Initializable {
             System.out.println("Not Connected to DB");
         }
 
+        //Set Items in Combo Box using enum class
         this.RolecomboBox.setItems(FXCollections.observableArrayList(option.values()));
     }
 
 
-
+    //Event for login Button
     @FXML
     public void Login(ActionEvent actionEvent){
         try {
+            //Check for loginCredentials
             if (this.loginModel.isLogin(this.username.getText(),
                     this.password.getText(),
                     ((option)this.RolecomboBox.getValue()).toString())
@@ -66,6 +73,7 @@ public class LoginController implements Initializable {
                 //login is loginButton id
                 Stage stage = (Stage)this.loginButton.getScene().getWindow();
                 stage.close();
+                //Navigates to Admin or Employee depending upon role value in ComboBox
                 switch (((option)this.RolecomboBox.getValue()).toString()){
                     case "Admin":
                         adminLogin();
@@ -78,6 +86,16 @@ public class LoginController implements Initializable {
 
             }
             else {
+                //If login credentials doesn't match
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                //Setting the title
+                alert.setTitle("Error");
+                ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+                //Setting the content of the dialog
+                alert.setContentText("Wrong credentials");
+                alert.show ();
+
                 this.loginStatus.setText("Wrong Credentials");
                 System.out.println(this.username.getText());
                 System.out.println(this.password.getText());
@@ -97,7 +115,17 @@ public class LoginController implements Initializable {
             FXMLLoader loader = new FXMLLoader();
             Pane root = (Pane)loader.load(getClass().getResource("admin.fxml").openStream());
             AdminController adminController = (AdminController)loader.getController();
+
+            DropShadow shadow = new DropShadow();
+            Button btn=new Button("Exit");
+            btn.setLayoutX ( 1300 );
+            btn.setLayoutY ( 5 );
+            btn.setWrapText ( true );
+            btn.setEffect(shadow);
+            btn.setOnAction ( e ->
+                    System.exit ( 0 ) );
             Scene scene = new Scene(root);
+            root.getChildren().add(btn);
             adminStage.setScene(scene);
             adminStage.setTitle("Admin Pannel");
             adminStage.setResizable(true);
@@ -116,7 +144,17 @@ public class LoginController implements Initializable {
             Pane root = (Pane)loader.load(getClass().getResource("employee.fxml").openStream());
             //Attach controller to fxml
             EmployeeController employeeController = (EmployeeController)loader.getController();
+
+            DropShadow shadow = new DropShadow();
+            Button btn=new Button("Exit");
+            btn.setLayoutX ( 1300 );
+            btn.setLayoutY ( 5 );
+            btn.setWrapText ( true );
+
+            btn.setOnAction ( e -> System.exit ( 0 ) );
+            btn.setEffect(shadow);
             Scene scene = new Scene(root);
+            root.getChildren().add(btn);
             employeeStage.setScene(scene);
             employeeStage.setTitle("Employee Dashboard");
             employeeStage.setResizable(true);

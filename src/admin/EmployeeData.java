@@ -26,7 +26,7 @@ public class EmployeeData {
         this.Salary = new SimpleStringProperty(salary);
 
     }
-
+    //Getters and setters to access values of EmployeeData class from outside class
     public String getID() {
         return ID.get();
     }
